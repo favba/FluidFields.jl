@@ -19,6 +19,9 @@ end
 
 VectorField(x::ScalarField{T,N,N2,L},y::ScalarField{T,N,N2,L},z::ScalarField{T,N,N2,L}) where {T,N,N2,L} = VectorField{T,N,N2,L}(x,y,z)
 
+VectorField{T}(dims::Vararg{Int}) where T = VectorField(ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...))
+VectorField(dims::Vararg{Int}) = VectorField(ScalarField(dims...),ScalarField(dims...),ScalarField(dims...))
+
 Base.similar(a::VectorField) = VectorField(similar(a.c.x),similar(a.c.y),similar(a.c.z))
 
 function InplaceRealFFT.rfft!(v::VectorField)

@@ -25,6 +25,9 @@ end
 
 SymTrTenField(xx::ScalarField{T,N,N2,L},xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yy::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L}) where {T,N,N2,L} = SymTrTenField{T,N,N2,L}(xx,xy,xz,yy,yz)
 
+SymTrTenField{T}(dims::Vararg{Int}) where T = SymTrTenField(ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...))
+SymTrTenField(dims::Vararg{Int}) = SymTrTenField(ScalarField(dims...),ScalarField(dims...),ScalarField(dims...),ScalarField(dims...),ScalarField(dims...))
+
 Base.similar(a::SymTrTenField) = SymTrTenField(similar(a.c.xx),similar(a.c.xy),similar(a.c.xz),similar(a.c.yy),similar(a.c.yz))
 
 function InplaceRealFFT.rfft!(v::SymTrTenField)
