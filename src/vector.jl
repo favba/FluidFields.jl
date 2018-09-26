@@ -17,8 +17,9 @@ end
 @inline FluidTensors.zvec(v::VectorField) =
     FluidTensors.zvec(v.c)
 
-
 VectorField(x::ScalarField{T,N,N2,L},y::ScalarField{T,N,N2,L},z::ScalarField{T,N,N2,L}) where {T,N,N2,L} = VectorField{T,N,N2,L}(x,y,z)
+
+Base.similar(a::VectorField) = VectorField(similar(a.c.x),similar(a.c.y),similar(a.c.z))
 
 function InplaceRealFFT.rfft!(v::VectorField)
     rfft!(v.c.x)

@@ -13,7 +13,9 @@ struct ScalarField{T<:Union{Float64,Float32},N,N2,L} <: AbstractPaddedArray{T,N}
 end
 
 ScalarField{T}(dims::Vararg{Int,N}) where {T,N} = ScalarField(PaddedArray{T}(dims...))
-ScalarField(dims) = ScalarField{Float64}(dims...)
+ScalarField(dims::Vararg{Int}) = ScalarField{Float64}(dims...)
+
+Base.similar(a::ScalarField) = ScalarField(similar(a.field))
 
 @inline InplaceRealFFT.data(a::ScalarField) = InplaceRealFFT.data(a.field)
 @inline Base.real(a::ScalarField) = real(a.field)
