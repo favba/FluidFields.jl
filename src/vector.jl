@@ -1,9 +1,9 @@
 struct VectorField{T,N,N2,L} <: AbstractVecArray{Complex{T},N}
-    rr::VecArray{T,N,Array{T,N}}
-    c::VecArray{Complex{T},N,ScalarField{T,N,N2,L}}
-    r::SubArray{Vec{T},N,VecArray{T,N,Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
+    rr::VecArray{T, N, Array{T,N}, Array{T,N}, Array{T,N}}
+    c::VecArray{Complex{T}, N, ScalarField{T,N,N2,L}, ScalarField{T,N,N2,L}, ScalarField{T,N,N2,L}}
+    r::SubArray{Vec{T},N,VecArray{T,N,Array{T,N},Array{T,N},Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
     function VectorField{T,N,N2,L}(x::ScalarField{T,N,N2,L},y::ScalarField{T,N,N2,L},z::ScalarField{T,N,N2,L}) where {T,N,N2,L}
-        c = VecArray{Complex{T},N,ScalarField{T,N,N2,L}}(x,y,z)
+        c = VecArray(x,y,z)
         rr = VecArray(InplaceRealFFT.data(x),InplaceRealFFT.data(y),InplaceRealFFT.data(z))
         r = view(rr, Base.OneTo(size(x.field.r, 1)), ntuple(i->Colon(), Val(N2))...)
         return new{T,N,N2,L}(rr,c,r)

@@ -1,10 +1,10 @@
 struct SymTrTenField{T,N,N2,L} <: AbstractSymTrTenArray{T,N}
-    rr::SymTrTenArray{T,N,Array{T,N}}
-    c::SymTrTenArray{Complex{T},N,ScalarField{T,N,N2,L}}
-    r::SubArray{SymTen{T},N,SymTrTenArray{T,N,Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
+    rr::SymTrTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}}
+    c::SymTrTenArray{Complex{T},N,ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L}}
+    r::SubArray{SymTen{T},N,SymTrTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
 
     function SymTrTenField{T,N,N2,L}(xx::ScalarField{T,N,N2,L},xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yy::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L}) where {T,N,N2,L}
-        c = SymTrTenArray{Complex{T},N,ScalarField{T,N,N2,L}}(xx,xy,xz,yy,yz)
+        c = SymTrTenArray(xx,xy,xz,yy,yz)
         rr = SymTrTenArray(InplaceRealFFT.data(xx),InplaceRealFFT.data(xy),InplaceRealFFT.data(xz),InplaceRealFFT.data(yy),InplaceRealFFT.data(yz))
         r = view(rr, Base.OneTo(size(xx.field.r, 1)), ntuple(i->Colon(), Val(N2))...)
         return new{T,N,N2,L}(rr,c,r)
