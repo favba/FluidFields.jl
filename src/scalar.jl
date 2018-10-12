@@ -15,6 +15,12 @@ end
 ScalarField{T}(dims::Vararg{Int}) where {T} = ScalarField(PaddedArray{T}(dims...))
 ScalarField(dims::Vararg{Int}) = ScalarField{Float64}(dims...)
 
+function ScalarField(file,dim::NTuple{Int})
+    r = ScalarField(PaddedArray(dim...))
+    read!(file,r.field.data)
+    return r
+end
+
 Base.similar(a::ScalarField) = ScalarField(similar(a.field))
 
 @inline InplaceRealFFT.data(a::ScalarField) = InplaceRealFFT.data(a.field)
