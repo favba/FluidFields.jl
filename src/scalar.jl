@@ -15,7 +15,7 @@ end
 ScalarField{T}(dims::Vararg{Int}) where {T} = ScalarField(PaddedArray{T}(dims...))
 ScalarField(dims::Vararg{Int}) = ScalarField{Float64}(dims...)
 
-function ScalarField(file,dim::NTuple{Int})
+function ScalarField(file,dim::NTuple{N,Int}) where N
     r = ScalarField(PaddedArray(dim...))
     read!(file,r.field.data)
     return r
