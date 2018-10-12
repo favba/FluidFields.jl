@@ -22,7 +22,7 @@ Base.similar(a::ScalarField) = ScalarField(similar(a.field))
 @inline InplaceRealFFT.complex_view(a::ScalarField) = InplaceRealFFT.complex_view(a.field)
 
 function Base.:*(p::FFTW.rFFTWPlan{T,FFTW.FORWARD,true,N},f::ScalarField{T,N,N2,L}) where {T<:Float3264,N,N2,L} 
-    isrealspace(f) || error("Field already is in Fourier space")
+    #isrealspace(f) || error("Field already is in Fourier space")
     mul!(InplaceRealFFT.complex_view(f),p,real(f))
     f.realspace[] = false
     f
@@ -32,7 +32,7 @@ InplaceRealFFT.rfft!(a::ScalarField) =
     a.fplan * a
 
 function Base.:*(p::FFTW.rFFTWPlan{Complex{T},FFTW.BACKWARD,true,N},f::ScalarField{T,N,N2,L}) where {T<:Float3264,N,N2,L} 
-    isrealspace(f) && error("Field already is in real space")
+    #isrealspace(f) && error("Field already is in real space")
     mul!(real(f),p,InplaceRealFFT.complex_view(f))
     f.realspace[] = true
     real(f)
