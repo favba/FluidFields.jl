@@ -10,6 +10,14 @@ struct VectorField{T,N,N2,L} <: AbstractVecArray{Complex{T},N}
     end
 end
 
+@inline function Base.getproperty(a::S,s::Symbol) where {S<:VectorField}
+    if (s === :kx || s === :ky || s === :kz || s === :k)
+        return getfield(getfield(getfield(getfield(a,:c),:x),:space),s)
+    else
+        return getfield(a,s)
+    end
+end
+
 @inline FluidTensors.xvec(v::VectorField) =
     FluidTensors.xvec(v.c)
 @inline FluidTensors.yvec(v::VectorField) =
@@ -19,8 +27,8 @@ end
 
 VectorField(x::ScalarField{T,N,N2,L},y::ScalarField{T,N,N2,L},z::ScalarField{T,N,N2,L}) where {T,N,N2,L} = VectorField{T,N,N2,L}(x,y,z)
 
-VectorField{T}(dims::Vararg{Int}) where T = VectorField(ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...))
-VectorField(dims::Vararg{Int}) = VectorField(ScalarField(dims...),ScalarField(dims...),ScalarField(dims...))
+VectorField{T}(dims::NTuple{3,Int},l::NTuple{3,Real}) where T = VectorField(ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l))
+VectorField(dims::NTuple{3,Int},l::NTuple{3,Real}) = VectorField(ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l))
 
 Base.similar(a::VectorField) = VectorField(similar(a.c.x),similar(a.c.y),similar(a.c.z))
 

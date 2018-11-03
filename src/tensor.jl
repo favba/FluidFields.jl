@@ -12,6 +12,14 @@ struct SymTrTenField{T,N,N2,L} <: AbstractSymTrTenArray{T,N}
 
 end
 
+@inline function Base.getproperty(a::S,s::Symbol) where {S<:SymTrTenField}
+    if (s === :kx || s === :ky || s === :kz || s === :k)
+        return getfield(getfield(getfield(getfield(a,:c),:xx),:space),s)
+    else
+        return getfield(a,s)
+    end
+end
+
 @inline FluidTensors.xxvec(v::SymTrTenField) =
     FluidTensors.xxvec(v.c)
 @inline FluidTensors.xyvec(v::SymTrTenField) =
@@ -25,8 +33,8 @@ end
 
 SymTrTenField(xx::ScalarField{T,N,N2,L},xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yy::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L}) where {T,N,N2,L} = SymTrTenField{T,N,N2,L}(xx,xy,xz,yy,yz)
 
-SymTrTenField{T}(dims::Vararg{Int}) where T = SymTrTenField(ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...),ScalarField{T}(dims...))
-SymTrTenField(dims::Vararg{Int}) = SymTrTenField(ScalarField(dims...),ScalarField(dims...),ScalarField(dims...),ScalarField(dims...),ScalarField(dims...))
+SymTrTenField{T}(dims::NTuple{3,Int},l::NTuple{3,Real}) where T = SymTrTenField(ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l))
+SymTrTenField(dims::NTuple{3,Int},l::NTuple{3,Real}) = SymTrTenField(ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l))
 
 Base.similar(a::SymTrTenField) = SymTrTenField(similar(a.c.xx),similar(a.c.xy),similar(a.c.xz),similar(a.c.yy),similar(a.c.yz))
 
