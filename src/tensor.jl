@@ -74,3 +74,7 @@ Base.show(io::IO,m::MIME"text/plain",a::SymTrTenField) =
 setreal!(a::SymTrTenField) = (setreal!(a.c.xx); setreal!(a.c.xy); setreal!(a.c.xz); setreal!(a.c.yy); setreal!(a.c.yz))
 
 setfourier!(a::SymTrTenField) = (setfourier!(a.c.xx); setfourier!(a.c.xy); setfourier!(a.c.xz); setfourier!(a.c.yy); setfourier!(a.c.yz))
+
+fourier!(a::SymTrTenField) = (fourier!(a.c.xx); fourier!(a.c.xy); fourier!(a.c.xz); fourier!(a.c.yy); fourier!(a.c.yz); a)
+
+real!(a::SymTrTenField) = (real!(a.c.xx); real!(a.c.xy); real!(a.c.xz); real!(a.c.yy); real!(a.c.yz); a.r)

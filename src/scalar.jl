@@ -77,3 +77,11 @@ Base.show(io::IO,m::MIME"text/plain",a::ScalarField) =
 
 setreal!(a::ScalarField) = (a.realspace[] = true)
 setfourier!(a::ScalarField) = (a.realspace[] = false)
+
+function fourier!(a::ScalarField)
+    rfft!(a)
+    rmul!(InplaceRealFFT.data(a),inv(prod(size(real(a))))) 
+    return a
+end
+
+real!(a::ScalarField) = brfft!(a)

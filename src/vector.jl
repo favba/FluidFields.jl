@@ -61,3 +61,7 @@ Base.show(io::IO,m::MIME"text/plain",a::VectorField) =
 
 setreal!(a::VectorField) = (a.c.x.realspace[] = true; a.c.y.realspace[] = true; a.c.z.realspace[] = true)
 setfourier!(a::VectorField) = (a.c.x.realspace[] = false; a.c.y.realspace[] = false; a.c.z.realspace[] = false)
+
+fourier!(a::VectorField) = (fourier!(a.c.x); fourier!(a.c.y); fourier!(a.c.z); a)
+
+real!(a::VectorField) = (real!(a.c.x); real!(a.c.y); real!(a.c.z); a.r)
