@@ -4,7 +4,7 @@ using InplaceRealFFT, LinearAlgebra, FFTW
 using FluidTensors
 import FluidTensors
 
-export ScalarField, VectorField, SymTrTenField, isrealspace
+export ScalarField, VectorField, SymTrTenField, isrealspace, setreal!, setfourier!
 
 const Float3264 = InplaceRealFFT.Float3264
 

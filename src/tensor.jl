@@ -58,7 +58,11 @@ function InplaceRealFFT.irfft!(v::SymTrTenField)
 end
 
 isrealspace(a::SymTrTenField) =
-    isrealspace(a.c.xx)
+    isrealspace(a.c.xx) && isrealspace(a.c.xy) && isrealspace(a.c.xz) && isrealspace(a.c.yy) && isrealspace(a.c.yz)
 
 Base.show(io::IO,m::MIME"text/plain",a::SymTrTenField) =
     isrealspace(a) ? show(io,m,a.r) : show(io,m,a.c)
+
+setreal!(a::SymTrTenField) = (setreal!(a.c.xx); setreal!(a.c.xy); setreal!(a.c.xz); setreal!(a.c.yy); setreal!(a.c.yz))
+
+setfourier!(a::SymTrTenField) = (setfourier!(a.c.xx); setfourier!(a.c.xy); setfourier!(a.c.xz); setfourier!(a.c.yy); setfourier!(a.c.yz))

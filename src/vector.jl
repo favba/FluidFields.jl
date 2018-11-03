@@ -46,7 +46,10 @@ function InplaceRealFFT.irfft!(v::VectorField)
 end
 
 isrealspace(a::VectorField) =
-    isrealspace(a.c.x)
+    isrealspace(a.c.x) && isrealspace(a.c.y) && isrealspace(a.c.z)
 
 Base.show(io::IO,m::MIME"text/plain",a::VectorField) =
     isrealspace(a) ? show(io,m,a.r) : show(io,m,a.c)
+
+setreal!(a::VectorField) = (a.c.x.realspace[] = true; a.c.y.realspace[] = true; a.c.z.realspace[] = true)
+setfourier!(a::VectorField) = (a.c.x.realspace[] = false; a.c.y.realspace[] = false; a.c.z.realspace[] = false)
