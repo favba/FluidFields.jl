@@ -37,7 +37,7 @@ function ScalarField(file,dim::NTuple{N,Int},l::Vararg{real,3}) where N
     return r
 end
 
-Base.similar(a::ScalarField) = ScalarField(similar(a.field),a.space.lx,a.space.ly,a.space.lz)
+Base.similar(a::ScalarField) = ScalarField(similar(a.field),(a.space.lx,a.space.ly,a.space.lz))
 
 @inline InplaceRealFFT.data(a::ScalarField) = InplaceRealFFT.data(a.field)
 @inline Base.real(a::ScalarField) = real(a.field)
