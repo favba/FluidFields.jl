@@ -120,7 +120,7 @@ end
 SymTenField(xx::ScalarField{T,N,N2,L},xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yy::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L},zz::ScalarField{T,N,N2,L}) where {T,N,N2,L} = SymTenField{T,N,N2,L}(xx,xy,xz,yy,yz,zz)
 
 SymTenField{T}(dims::NTuple{3,Int},l::NTuple{3,Real}) where T = SymTenField(ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l))
-SymTenField(dims::NTuple{3,Int},l::NTuple{3,Real}) = SymTenField(ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField{T}(dims,l))
+SymTenField(dims::NTuple{3,Int},l::NTuple{3,Real}) = SymTenField(ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l))
 
 Base.similar(a::SymTenField) = SymTenField(similar(a.c.xx),similar(a.c.xy),similar(a.c.xz),similar(a.c.yy),similar(a.c.yz),similar(a.c.zz))
 
