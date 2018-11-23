@@ -7,9 +7,9 @@ Base.IndexStyle(::Type{<:AbstractKvec}) = IndexLinear()
 struct RKvec{T<:AbstractFloat} <: AbstractKvec{T}
     n::Int
     l::T
-    @inline function RKvec{T}(nx::Int,lx::T) where {T}
+    @inline function RKvec{T}(nx::Integer,lx::Real) where {T}
         n = div(nx,2) + 1
-        return new{T}(n,lx)
+        return new{T}(n,T(lx))
     end
 end
 
