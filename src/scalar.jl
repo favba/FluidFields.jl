@@ -2,14 +2,17 @@ struct ScalarField{T<:Union{Float64,Float32},N,N2,L} <: AbstractPaddedArray{T,N}
     field::PaddedArray{T,N,N2,L}
     fplan::FFTW.rFFTWPlan{T,-1,true,N}
     bplan::FFTW.rFFTWPlan{Complex{T},1,true,N}
-    space::Space{T}
+    k::VecArray{T,3,HomogeneousArray{T,3,RKvec{T},1},HomogeneousArray{T,3,Kvec{T},2},HomogeneousArray{T,3,Kvec{T},3}}
     realspace::Base.RefValue{Bool}
     
     function ScalarField(field::PaddedArray{T,N,N2,L},l) where {T,N,N2,L}
         fplan = plan_rfft!(field,1:N,flags=FFTW.MEASURE)
         bplan = plan_brfft!(field,1:N,flags=FFTW.MEASURE)
-        space = Space{T}(size(field.r,1),size(field.r,2),size(field.r,3),l[1],l[2],l[3])
-        return new{T,N,N2,L}(field,fplan,bplan,space,Ref(true))
+        s = size(field)
+        k = VecArray(HomogeneousArray{1}(RKvec{T}(size(field.r,1),l[1]),s),
+                     HomogeneousArray{2}(Kvec{T}(size(field.r,2),l[2]),s),
+                     HomogeneousArray{3}(Kvec{T}(size(field.r,3),l[3]),s))
+        return new{T,N,N2,L}(field,fplan,bplan,k,Ref(true))
     end 
 
 end
@@ -21,8 +24,12 @@ end
         return getfield(getfield(a,:field),:r)
     elseif s === :c 
         return getfield(a,:field)
-    elseif (s === :kx || s === :ky || s === :kz || s === :k)
-        return getfield(getfield(a,:space),s)
+    elseif s === :kx
+        return getfield(getfield(getfield(a,:k),:x),:data)
+    elseif s === :ky
+        return getfield(getfield(getfield(a,:k),:y),:data)
+    elseif s === :kz
+        return getfield(getfield(getfield(a,:k),:z),:data)
     else
         return getfield(a,s)
     end
@@ -37,7 +44,7 @@ function ScalarField(file,dim::NTuple{N,Int},l::Vararg{real,3}) where N
     return r
 end
 
-Base.similar(a::ScalarField) = ScalarField(similar(a.field),(a.space.lx,a.space.ly,a.space.lz))
+Base.similar(a::ScalarField) = ScalarField(similar(a.field),(a.kx.l,a.ky.l,a.kz.l))
 
 @inline InplaceRealFFT.data(a::ScalarField) = InplaceRealFFT.data(a.field)
 @inline Base.real(a::ScalarField) = real(a.field)

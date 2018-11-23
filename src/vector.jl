@@ -12,7 +12,7 @@ end
 
 @inline function Base.getproperty(a::S,s::Symbol) where {S<:VectorField}
     if (s === :kx || s === :ky || s === :kz || s === :k)
-        return getfield(getfield(getfield(getfield(a,:c),:x),:space),s)
+        return getproperty(getfield(getfield(a,:c),:x),s)
     else
         return getfield(a,s)
     end

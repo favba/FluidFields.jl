@@ -14,7 +14,7 @@ end
 
 @inline function Base.getproperty(a::S,s::Symbol) where {S<:SymTrTenField}
     if (s === :kx || s === :ky || s === :kz || s === :k)
-        return getfield(getfield(getfield(getfield(a,:c),:xx),:space),s)
+        return getproperty(getfield(getfield(a,:c),:xx),s)
     else
         return getfield(a,s)
     end
@@ -98,7 +98,7 @@ end
 
 @inline function Base.getproperty(a::S,s::Symbol) where {S<:SymTenField}
     if (s === :kx || s === :ky || s === :kz || s === :k)
-        return getfield(getfield(getfield(getfield(a,:c),:xx),:space),s)
+        return getproperty(getfield(getfield(a,:c),:xx),s)
     else
         return getfield(a,s)
     end
