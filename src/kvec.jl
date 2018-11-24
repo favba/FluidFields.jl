@@ -23,12 +23,18 @@ end
 struct Kvec{T<:AbstractFloat} <: AbstractKvec{T}
     n::Int
     l::T
+    p::Int
+    @inline function Kvec{T}(n::Integer,l::Real) where {T}
+        p = (n+1)÷2
+        return new{T}(n,T(l),p)
+    end
 end
 
 @inline function Base.getindex(a::Kvec{T},i::Integer) where {T}
     l = a.l
     n = a.n
+    p = a.p
     @boundscheck checkbounds(a,i)
-    no2 = (i <= (n+1)÷2)
+    no2 = (i <= p)
     return ifelse(no2, (i-1)/l, (i-n-1)/l)
 end
