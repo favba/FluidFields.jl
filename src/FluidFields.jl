@@ -16,4 +16,17 @@ include("tensor.jl")
 
 const AbstractField = Union{<:ScalarField,<:VectorField,<:SymTrTenField}
 
+function __init__()
+    path = @__DIR__
+    fftwplan = joinpath(path,"fftw_wisdom")
+    FFTW.set_num_threads(Threads.nthreads())
+    if isfile(fftwplan)
+        try 
+            FFTW.import_wisdom(fftwplan)
+        catch
+        end
+    end
+    atexit(()->(FFTW.export_wisdom(fftwplan)))
+end
+
 end # module
