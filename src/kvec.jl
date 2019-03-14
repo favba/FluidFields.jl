@@ -13,7 +13,24 @@ struct RKvec{T<:AbstractFloat} <: AbstractKvec{T}
     end
 end
 
-@inline function Base.getindex(a::RKvec{T},i::Integer) where {T}
+struct SRKvec{T<:AbstractFloat,n,l} <: AbstractKvec{T}
+    @inline function SRKvec(nx::Integer,lx::T) where {T}
+        n = div(nx,2) + 1
+        return new{T,n,lx}()
+    end
+end
+
+@inline function Base.getproperty(a::SRKvec{T,n,l},s::Symbol) where {T,n,l}
+    if s === :n
+        return n
+    elseif s === :l
+        return l
+    else
+        return getfield(a,s)
+    end
+end
+
+@inline function Base.getindex(a::Union{<:SRKvec,<:RKvec},i::Integer)
     l = a.l
     n = a.n
     @boundscheck checkbounds(a,i)
@@ -30,7 +47,26 @@ struct Kvec{T<:AbstractFloat} <: AbstractKvec{T}
     end
 end
 
-@inline function Base.getindex(a::Kvec{T},i::Integer) where {T}
+struct SKvec{T<:AbstractFloat,n,l,p} <: AbstractKvec{T}
+    @inline function SKvec(n::Integer,l::T) where {T}
+        p = (n+1)÷2
+        return new{T,n,l,p}()
+    end
+end
+
+@inline function Base.getproperty(a::SKvec{T,n,l,p},s::Symbol) where {T,n,l,p}
+    if s === :n
+        return n
+    elseif s === :l
+        return l
+    elseif s === :p
+        return p
+    else
+        return getfield(a,s)
+    end
+end
+
+@inline function Base.getindex(a::Union{<:SKvec,<:Kvec},i::Integer)
     l = a.l
     n = a.n
     p = a.p
