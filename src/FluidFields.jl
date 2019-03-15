@@ -14,7 +14,7 @@ include("scalar.jl")
 include("vector.jl")
 include("tensor.jl")
 
-const AbstractField = Union{<:ScalarField,<:VectorField,<:SymTrTenField}
+const AbstractField{T} = Union{<:ScalarField{T},<:VectorField{T},<:AbstractTensorField{T}}
 
 function __init__()
     path = @__DIR__

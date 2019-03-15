@@ -1,4 +1,4 @@
-struct SymTrTenField{T,N,N2,L} <: AbstractSymTrTenArray{T,N}
+struct SymTrTenField{T,N,N2,L} <: AbstractSymTrTenArray{Complex{T},N}
     rr::SymTrTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}}
     c::SymTrTenArray{Complex{T},N,ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L}}
     r::SubArray{SymTen{T},N,SymTrTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
@@ -82,7 +82,7 @@ real!(a::SymTrTenField) = (real!(a.c.xx); real!(a.c.xy); real!(a.c.xz); real!(a.
 
 ################################ SymTenField ########################################
 
-struct SymTenField{T,N,N2,L} <: AbstractSymTenArray{T,N}
+struct SymTenField{T,N,N2,L} <: AbstractSymTenArray{Complex{T},N}
     rr::SymTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}}
     c::SymTenArray{Complex{T},N,ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L}}
     r::SubArray{SymTen{T},N,SymTenArray{T,N,Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N},Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
@@ -168,4 +168,4 @@ fourier!(a::SymTenField) = (fourier!(a.c.xx); fourier!(a.c.xy); fourier!(a.c.xz)
 
 real!(a::SymTenField) = (real!(a.c.xx); real!(a.c.xy); real!(a.c.xz); real!(a.c.yy); real!(a.c.yz); real!(a.c.zz); a.r)
 
-const AbstractTensorField = Union{<:SymTenField,<:SymTrTenField}
+const AbstractTensorField{T} = Union{<:SymTenField{T},<:SymTrTenField{T}}
