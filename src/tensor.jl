@@ -168,4 +168,78 @@ fourier!(a::SymTenField) = (fourier!(a.c.xx); fourier!(a.c.xy); fourier!(a.c.xz)
 
 real!(a::SymTenField) = (real!(a.c.xx); real!(a.c.xy); real!(a.c.xz); real!(a.c.yy); real!(a.c.yz); real!(a.c.zz); a.r)
 
-const AbstractTensorField{T} = Union{<:SymTenField{T},<:SymTrTenField{T}}
+################################################################# AntiSymTenField
+struct AntiSymTenField{T,N,N2,L} <: AbstractAntiSymTenArray{Complex{T},N}
+    rr::AntiSymTenArray{T,N,Array{T,N},Array{T,N},Array{T,N}}
+    c::AntiSymTenArray{Complex{T},N,ScalarField{T,N,N2,L},ScalarField{T,N,N2,L},ScalarField{T,N,N2,L}}
+    r::SubArray{AntiSymTen{T},N,AntiSymTenArray{T,N,Array{T,N},Array{T,N},Array{T,N}},Tuple{Base.OneTo{Int},Vararg{Base.Slice{Base.OneTo{Int}},N2}},L} 
+
+    function AntiSymTenField{T,N,N2,L}(xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L}) where {T,N,N2,L}
+        c = AntiSymTenArray(xy,xz,yz)
+        rr = AntiSymTenArray(InplaceRealFFT.data(xy),InplaceRealFFT.data(xz),InplaceRealFFT.data(yz))
+        r = view(rr, Base.OneTo(size(xy.field.r, 1)), ntuple(i->Colon(), Val(N2))...)
+        return new{T,N,N2,L}(rr,c,r)
+    end
+
+end
+
+@inline function Base.getproperty(a::S,s::Symbol) where {S<:AntiSymTenField}
+    if (s === :kx || s === :ky || s === :kz || s === :k)
+        return getproperty(getfield(getfield(a,:c),:xy),s)
+    else
+        return getfield(a,s)
+    end
+end
+
+@inline FluidTensors.xyvec(v::AntiSymTenField) =
+    FluidTensors.xyvec(v.c)
+@inline FluidTensors.xzvec(v::AntiSymTenField) =
+    FluidTensors.xzvec(v.c)
+@inline FluidTensors.yzvec(v::AntiSymTenField) =
+    FluidTensors.yzvec(v.c)
+
+AntiSymTenField(xy::ScalarField{T,N,N2,L},xz::ScalarField{T,N,N2,L},yz::ScalarField{T,N,N2,L}) where {T,N,N2,L} = AntiSymTenField{T,N,N2,L}(xy,xz,yz)
+
+AntiSymTenField{T}(dims::NTuple{3,Int},l::NTuple{3,Real}) where T = AntiSymTenField(ScalarField{T}(dims,l),ScalarField{T}(dims,l),ScalarField{T}(dims,l))
+AntiSymTenField(dims::NTuple{3,Int},l::NTuple{3,Real}) = AntiSymTenField(ScalarField(dims,l),ScalarField(dims,l),ScalarField(dims,l))
+
+Base.similar(a::AntiSymTenField) = AntiSymTenField(similar(a.c.xy),similar(a.c.xz),similar(a.c.yz))
+
+function InplaceRealFFT.rfft!(v::AntiSymTenField)
+    rfft!(v.c.xy)
+    rfft!(v.c.xz)
+    rfft!(v.c.yz)
+    return v
+end
+
+function InplaceRealFFT.brfft!(v::AntiSymTenField)
+    brfft!(v.c.xy)
+    brfft!(v.c.xz)
+    brfft!(v.c.yz)
+    return v.r
+end
+
+function InplaceRealFFT.irfft!(v::AntiSymTenField)
+    irfft!(v.c.xy)
+    irfft!(v.c.xz)
+    irfft!(v.c.yz)
+    return v.r
+end
+
+isrealspace(a::AntiSymTenField) =
+    isrealspace(a.c.xy) && isrealspace(a.c.xz) && isrealspace(a.c.yz)
+
+Base.show(io::IO,m::MIME"text/plain",a::AntiSymTenField) =
+    isrealspace(a) ? show(io,m,a.r) : show(io,m,a.c)
+
+setreal!(a::AntiSymTenField) = (setreal!(a.c.xy); setreal!(a.c.xz); setreal!(a.c.yz))
+
+setfourier!(a::AntiSymTenField) = (setfourier!(a.c.xy); setfourier!(a.c.xz); setfourier!(a.c.yz))
+
+fourier!(a::AntiSymTenField) = (fourier!(a.c.xy); fourier!(a.c.xz); fourier!(a.c.yz); a)
+
+real!(a::AntiSymTenField) = (real!(a.c.xy); real!(a.c.xz); real!(a.c.yz); a.r)
+
+###############################################
+
+const AbstractTensorField{T} = Union{<:SymTenField{T},<:SymTrTenField{T},<:AntiSymTenField{T}}

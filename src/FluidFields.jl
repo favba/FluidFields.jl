@@ -5,7 +5,7 @@ using FluidTensors
 import FluidTensors
 
 export ScalarField, VectorField, SymTenField, SymTrTenField, isrealspace, setreal!, setfourier!, real!, fourier!, AbstractField, AbstractTensorField
-
+export AntiSymTenField
 
 const Float3264 = InplaceRealFFT.Float3264
 
