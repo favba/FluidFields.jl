@@ -7,6 +7,8 @@ import FluidTensors
 export ScalarField, VectorField, SymTenField, SymTrTenField, isrealspace, setreal!, setfourier!, real!, fourier!, AbstractField, AbstractTensorField
 export AntiSymTenField
 
+export dealias!
+
 const Float3264 = InplaceRealFFT.Float3264
 
 include("kvec.jl")
@@ -15,6 +17,8 @@ include("vector.jl")
 include("tensor.jl")
 
 const AbstractField{T} = Union{<:ScalarField{T},<:VectorField{T},<:AbstractTensorField{T}}
+
+include("functions.jl")
 
 function __init__()
     path = @__DIR__
